@@ -188,12 +188,23 @@ static void test_access_null() {
 }
 
 static void test_access_boolean() {
-    /* \TODO */
-    /* Use EXPECT_TRUE() and EXPECT_FALSE() */
+	lept_value v;
+	lept_init(&v);
+	lept_set_string(&v, "a", 1);
+	lept_set_boolean(&v, 1);
+	EXPECT_TRUE(lept_get_boolean(&v));
+	lept_set_boolean(&v, 0);
+	EXPECT_FALSE(lept_get_boolean(&v));
+	lept_free(&v);
 }
 
 static void test_access_number() {
-    /* \TODO */
+	lept_value v;
+	lept_init(&v);
+	lept_set_string(&v, "a", 1);
+	lept_set_number(&v, 1234.5);
+	EXPECT_EQ_DOUBLE(1234.5, lept_get_number(&v));
+	lept_free(&v);
 }
 
 static void test_access_string() {
@@ -229,5 +240,6 @@ static void test_parse() {
 int main() {
     test_parse();
     printf("%d/%d (%3.2f%%) passed\n", test_pass, test_count, test_pass * 100.0 / test_count);
+	system("pause");
     return main_ret;
 }
