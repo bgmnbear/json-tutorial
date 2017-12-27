@@ -347,7 +347,30 @@ int lept_parse(lept_value* v, const char* json) {
 }
 
 static void lept_stringify_string(lept_context* c, const char* s, size_t len) {
-    /* ... */
+	size_t i;
+	assert(s != NULL);
+	PUTC(c, '"');
+	for (i = 0; i < len; i++) {
+		unsigned char ch = (unsigned char)s[i];
+		switch (ch) {
+		case '\"': PUTS(c, "\\\"", 2); break;
+		case '\\': PUTS(c, "\\\\", 2); break;
+		case '\b': PUTS(c, "\\b", 2); break;
+		case '\f': PUTS(c, "\\f", 2); break;
+		case '\n': PUTS(c, "\\n", 2); break;
+		case '\r': PUTS(c, "\\r", 2); break;
+		case '\t': PUTS(c, "\\t", 2); break;
+		default:
+			if (ch < 0x20) {
+				char buffer[7];
+				sprintf(buffer, "\\u%04X", ch);
+				PUTS(c, buffer, 6);
+			}
+			else
+				PUTC(c, s[i]);
+		}
+	}
+	PUTC(c, '"');
 }
 
 static void lept_stringify_value(lept_context* c, const lept_value* v) {
